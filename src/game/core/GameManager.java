@@ -8,19 +8,19 @@ import game.utils.InputFacade;
 public class GameManager {
     private static GameManager instance;
 
-    private GameManager() {
-    }
+    private GameManager() {}
 
     public void startGame() {
         GameStage[] scenes = {new Stage1(), new Stage2()};
         for (GameStage scene : scenes) {
             scene.start();
         }
-        checkIfPlayerWantsToReplay();
+        replayIfWanted();
     }
 
-    private void checkIfPlayerWantsToReplay() {
-        boolean playerWantsToReplay = InputFacade.getInstance().readYesNo("Do you want to play again?");
+    private void replayIfWanted() {
+        boolean playerWantsToReplay = InputFacade.getInstance()
+                .readYesNo("Do you want to play again?");
         if (playerWantsToReplay) startGame();
     }
 
