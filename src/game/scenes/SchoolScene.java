@@ -23,7 +23,6 @@ public class SchoolScene extends BattleScene {
     }
 
     public void fightDemogorgonScene() {
-        System.out.println("Fighting Demogorgon* 🤺");
         Character demogorgon = new Demogorgon();
         combatFacade.fight(player, demogorgon);
     }

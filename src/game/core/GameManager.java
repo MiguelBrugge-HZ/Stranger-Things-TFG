@@ -5,7 +5,7 @@ import game.characters.heros.Eleven;
 import game.stages.GameStage;
 import game.stages.Stage1;
 import game.stages.Stage2;
-import game.utils.InputFacade;
+import game.utils.InputManager;
 import game.characters.Character;
 
 import java.util.List;
@@ -30,12 +30,12 @@ public class GameManager {
                 new Demogorgon()
         );
 
-        InputFacade input = InputFacade.getInstance();
+        InputManager input = InputManager.getInstance();
         return input.chooseOption("Choose your character:", characters);
     }
 
     private void replayIfWanted() {
-        boolean playerWantsToReplay = InputFacade.getInstance()
+        boolean playerWantsToReplay = InputManager.getInstance()
                 .readYesNo("Do you want to play again?");
         if (playerWantsToReplay) startGame();
     }

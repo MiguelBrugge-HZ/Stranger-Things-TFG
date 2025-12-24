@@ -1,7 +1,7 @@
 package game.characters;
 
 import game.combat.Move;
-import game.utils.InputFacade;
+import game.utils.InputManager;
 
 import java.util.List;
 import java.util.Random;
@@ -21,7 +21,7 @@ public abstract class Character implements Fighter {
         if (moves == null || moves.isEmpty()) {
             throw new IllegalStateException("No moves defined for " + name);
         }
-        return InputFacade.getInstance().chooseOption("-- Choose your move:", moves);
+        return InputManager.getInstance().chooseOption("-- Choose your move:", moves);
     }
 
     public Move chooseRandomMove() {

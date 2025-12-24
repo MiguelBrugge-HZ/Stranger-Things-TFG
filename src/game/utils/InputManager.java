@@ -3,17 +3,17 @@ package game.utils;
 import java.util.List;
 import java.util.Scanner;
 
-public class InputFacade {
-    private static InputFacade instance;
+public class InputManager {
+    private static InputManager instance;
     private final Scanner scanner;
 
-    private InputFacade() {
+    private InputManager() {
         scanner = new Scanner(System.in);
     }
 
-    public static InputFacade getInstance() {
+    public static InputManager getInstance() {
         if (instance == null) {
-            instance = new InputFacade();
+            instance = new InputManager();
         }
         return instance;
     }
