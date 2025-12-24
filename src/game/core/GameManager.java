@@ -19,7 +19,7 @@ public class GameManager {
         GameStage[] scenes = { new Stage1(), new Stage2() };
         Character player = chooseCharacter();
         for (GameStage scene : scenes) {
-            scene.start(player);
+            player = scene.start(player);
         }
         replayIfWanted();
     }

@@ -6,10 +6,10 @@ import game.utils.InputManager;
 import java.util.List;
 import java.util.Random;
 
-public abstract class Character implements Fighter {
-    private final String name;
+public abstract class Character {
+    protected String name;
     private int health;
-    protected List<Move> moves;
+    protected final List<Move> moves;
 
     protected Character(String name, int health,  List<Move> moves) {
         this.name = name;
@@ -29,6 +29,10 @@ public abstract class Character implements Fighter {
         return moves.get(random.nextInt(moves.size()));
     }
 
+    public void attack() {
+        System.out.println(this.getName() + " attacks*");
+    }
+
     public String getName() {
         return this.name;
     }
@@ -39,6 +43,10 @@ public abstract class Character implements Fighter {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public List<Move> getMoves() {
+        return this.moves;
     }
 
     @Override

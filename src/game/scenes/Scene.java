@@ -3,7 +3,7 @@ import game.characters.Character;
 
 public abstract class Scene {
     protected Character player;
-    public abstract void play();
+    public abstract Character play();
     protected abstract void startScene();
     protected abstract void endScene();
 

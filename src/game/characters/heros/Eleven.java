@@ -13,9 +13,4 @@ public class Eleven extends Character {
                 new Move("🤯Mind Blast", 5, 30, 0.4)
         ));
     }
-
-    @Override
-    public void attack() {
-        System.out.println(this.getName() + " attacks*");
-    }
 }
