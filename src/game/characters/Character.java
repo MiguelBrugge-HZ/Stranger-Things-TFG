@@ -1,5 +1,7 @@
 package game.characters;
 
+import game.scenes.Scene;
+
 public abstract class Character implements Fighter {
     private final String name;
     private int health;
@@ -19,5 +21,10 @@ public abstract class Character implements Fighter {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

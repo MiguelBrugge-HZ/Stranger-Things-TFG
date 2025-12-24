@@ -2,6 +2,6 @@ package game.scenes;
 
 import game.combat.CombatFacade;
 
-public abstract class BattleScene implements Scene{
+public abstract class BattleScene extends Scene{
     private CombatFacade combatFacade;
 }

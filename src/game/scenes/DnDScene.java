@@ -2,9 +2,9 @@ package game.scenes;
 
 import game.characters.Character;
 
-public class DnDScene implements Scene{
+public class DnDScene extends Scene{
     @Override
-    public void play(Character character) {
+    public void play() {
         startScene();
         endScene();
     }

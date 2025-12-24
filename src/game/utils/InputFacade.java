@@ -1,5 +1,6 @@
 package game.utils;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class InputFacade {
@@ -41,6 +42,25 @@ public class InputFacade {
             if (input.equalsIgnoreCase("Y")) return true;
             if (input.equalsIgnoreCase("N")) return false;
             System.out.println("Invalid input. Enter Y or N.");
+        }
+    }
+
+    public <T> T chooseOption(String prompt, List<T> options) {
+        if (options == null || options.isEmpty()) {
+            throw new IllegalArgumentException("Options cannot be empty");
+        }
+
+        System.out.println(prompt);
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println((i + 1) + ". " + options.get(i));
+        }
+
+        while (true) {
+            int choice = readInt("Choose an option (1-" + options.size() + "): ");
+            if (choice >= 1 && choice <= options.size()) {
+                return options.get(choice - 1);
+            }
+            System.out.println("Invalid choice.");
         }
     }
 }

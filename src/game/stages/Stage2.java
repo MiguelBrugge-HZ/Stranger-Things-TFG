@@ -5,7 +5,5 @@ import game.scenes.SchoolScene;
 
 public class Stage2 extends GameStage {
     @Override
-    Scene createScene() {
-        return new SchoolScene();
-    }
+    Scene createScene() { return new SchoolScene(); }
 }
