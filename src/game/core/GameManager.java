@@ -8,7 +8,6 @@ import game.stages.Stage2;
 import game.utils.InputFacade;
 import game.characters.Character;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
@@ -25,6 +24,16 @@ public class GameManager {
         replayIfWanted();
     }
 
+    private Character chooseCharacter() {
+        List<Character> characters = List.of(
+                new Eleven(),
+                new Demogorgon()
+        );
+
+        InputFacade input = InputFacade.getInstance();
+        return input.chooseOption("Choose your character:", characters);
+    }
+
     private void replayIfWanted() {
         boolean playerWantsToReplay = InputFacade.getInstance()
                 .readYesNo("Do you want to play again?");
@@ -36,15 +45,5 @@ public class GameManager {
             instance = new GameManager();
         }
         return instance;
-    }
-
-    public Character chooseCharacter() {
-        List<Character> characters = List.of(
-                new Eleven(),
-                new Demogorgon()
-        );
-
-        InputFacade input = InputFacade.getInstance();
-        return input.chooseOption("Choose your character:", characters);
     }
 }

@@ -8,6 +8,7 @@ public abstract class GameStage {
     public void start(Character player) {
         Scene scene = this.createScene();
         scene.setPlayer(player);
+        System.out.println();
         scene.play();
     }
 }

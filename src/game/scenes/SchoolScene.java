@@ -1,17 +1,31 @@
 package game.scenes;
 
 import game.characters.Character;
+import game.characters.enemies.Demogorgon;
+import game.combat.CombatFacade;
 
-public class SchoolScene extends Scene{
+public class SchoolScene extends BattleScene {
+    public SchoolScene(CombatFacade combatFacade) {
+        super(combatFacade);
+    }
+
     @Override
     public void play() {
+        System.out.println("Stage 2 -- School");
         startScene();
+        fightDemogorgonScene();
         endScene();
     }
 
     @Override
     public void startScene() {
         System.out.println("SchoolScene play");
+    }
+
+    public void fightDemogorgonScene() {
+        System.out.println("Fighting Demogorgon* 🤺");
+        Character demogorgon = new Demogorgon();
+        combatFacade.fight(player, demogorgon);
     }
 
     @Override
