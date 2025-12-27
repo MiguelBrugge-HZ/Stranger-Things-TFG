@@ -8,7 +8,16 @@ public class BatDecorator extends CharacterDecorator {
 
     public BatDecorator(Character wrapped) {
         super(wrapped);
-        name = "Bat";
         moves.add(new Move("🏏 Bat Slash", 8, 18, 0.85));
+    }
+
+    @Override
+    public String toString() {
+        return "Bat";
+    }
+
+    @Override
+    public String getName() {
+        return wrapped.getName() + " with Bat";
     }
 }
