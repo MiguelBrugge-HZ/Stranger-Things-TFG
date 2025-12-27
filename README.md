@@ -94,4 +94,55 @@ public class Stage1 extends GameStage {
 }
 ```
 
+## Structural Design Pattern
 
+### 1. Decorator Pattern
+
+In this game, the Decorator pattern is used to add weapons to a character during gameplay without modifying the original character classes.
+
+Base characters such as `Eleven` are created first. During the stage, the player chooses a weapon. That weapon is applied by wrapping the existing character with a weapon decorator. This allows the character to gain new moves while keeping the original character implementation unchanged.
+
+Using the Decorator pattern avoids creating many subclasses such as `ElevenWithBat` or `ElevenWithHammer` and makes it easy to add new weapons in the future.
+
+---
+
+### Implementation
+#### CharacterDecorator: It copies the existing character’s state (name, health, moves) and allows subclasses to extend or modify behavior.
+
+```java
+public abstract class CharacterDecorator extends Character {
+
+    protected final Character wrapped;
+
+    protected CharacterDecorator(Character wrapped) {
+        super(
+            wrapped.getName(),
+            wrapped.getHealth(),
+            new ArrayList<>(wrapped.getMoves())
+        );
+        this.wrapped = wrapped;
+    }
+
+    @Override
+    public Move chooseMove() {
+        return super.chooseMove();
+    }
+}
+```
+
+#### BatDecorator: Adding bat weapon to a character by introducing a new attack move.
+
+```java
+public class BatDecorator extends CharacterDecorator {
+
+    public BatDecorator(Character wrapped) {
+        super(wrapped);
+        moves.add(new Move("🏏 Bat Slash", 8, 18, 0.85));
+    }
+
+    @Override
+    public String getName() {
+        return wrapped.getName() + " with Bat";
+    }
+}
+```
