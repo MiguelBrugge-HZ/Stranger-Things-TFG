@@ -56,4 +56,42 @@ public class InputManager {
 }
 ```
 
+## Creational Design Pattern
+### 2. Factory Method Pattern
+
+In this game, the Factory Method pattern is used to create different types of game scenes, the main game flow doesn't need to know the exact scene classes.
+
+The `GameStage` class defines a method for creating a `Scene`, but does not decide which specific scene is created. Each concrete stage is responsible for providing its own scene implementation. This allows the game to add new stages and scenes without changing the core game logic.
+
+---
+
+### Implementation
+
+#### GameStage
+
+`GameStage` defines the factory method `createScene()` and contains the shared logic for starting a stage.
+
+```java
+public abstract class GameStage {
+    abstract Scene createScene();
+
+    public Character start(Character player) {
+        Scene scene = this.createScene();
+        scene.setPlayer(player);
+        return scene.play();
+    }
+}
+```
+
+#### Stage1
+`Stage1` overrides the factory method `createScene()` to create a DnDScene.
+```java
+public class Stage1 extends GameStage {
+    @Override
+    Scene createScene() {
+        return new DnDScene();
+    }
+}
+```
+
 
