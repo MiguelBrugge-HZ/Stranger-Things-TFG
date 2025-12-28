@@ -21,7 +21,8 @@ public class CombatFacade {
     }
 
     private void executeTurn(Character attacker, Character defender, boolean playerTurn) {
-        Move move = playerTurn ? attacker.chooseMove() : attacker.chooseRandomMove();
+//        Move move = playerTurn ? attacker.chooseMove() : attacker.chooseRandomMove();
+        Move move = attacker.chooseMove();
         System.out.println(attacker.getName() + " uses " + move.getName());
 
         int damage = move.execute();

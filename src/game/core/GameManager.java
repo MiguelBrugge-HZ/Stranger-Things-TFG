@@ -2,9 +2,11 @@ package game.core;
 
 import game.characters.enemies.Demogorgon;
 import game.characters.heros.Eleven;
+import game.characters.heros.Steve;
 import game.stages.GameStage;
 import game.stages.Stage1;
 import game.stages.Stage2;
+import game.stages.Stage3;
 import game.utils.InputManager;
 import game.characters.Character;
 
@@ -16,7 +18,7 @@ public class GameManager {
     private GameManager() {}
 
     public void startGame() {
-        GameStage[] scenes = { new Stage1(), new Stage2() };
+        GameStage[] scenes = { new Stage1(), new Stage2(), new Stage3()};
         Character player = chooseCharacter();
         for (GameStage scene : scenes) {
             player = scene.start(player);
@@ -27,7 +29,7 @@ public class GameManager {
     private Character chooseCharacter() {
         List<Character> characters = List.of(
                 new Eleven(),
-                new Demogorgon()
+                new Steve()
         );
 
         InputManager input = InputManager.getInstance();

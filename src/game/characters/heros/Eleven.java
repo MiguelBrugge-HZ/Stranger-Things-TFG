@@ -1,11 +1,9 @@
 package game.characters.heros;
-
-import game.characters.Character;
+import game.characters.Hero;
 import game.combat.Move;
-
 import java.util.List;
 
-public class Eleven extends Character {
+public class Eleven extends Hero {
     public Eleven() {
         super("Eleven", 90, List.of(
                 new Move("🤜Punch", 8, 12, 0.9),
