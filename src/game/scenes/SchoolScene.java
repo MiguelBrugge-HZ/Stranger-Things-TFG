@@ -15,7 +15,6 @@ public class SchoolScene extends BattleScene {
         System.out.println(player.getClass().getSimpleName());
         startScene();
         fightDemogorgonScene();
-        TransitionToUpsideDown.play();
         endScene();
         return player;
     }

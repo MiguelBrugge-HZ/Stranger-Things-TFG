@@ -3,6 +3,7 @@ package game.scenes;
 import game.characters.Character;
 import game.characters.enemies.Bat;
 import game.combat.CombatFacade;
+import game.scenes.transitions.TransitionToVecnaFight;
 
 public class UpsideDownScene extends BattleScene{
     public UpsideDownScene(CombatFacade combatFacade) {

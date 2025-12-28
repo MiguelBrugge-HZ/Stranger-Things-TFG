@@ -1,6 +1,7 @@
 package game.scenes;
 
 import game.characters.Character;
+import game.scenes.transitions.TransitionToSchool;
 import game.utils.InputManager;
 import game.weapons.BatDecorator;
 import game.weapons.HammerDecorator;
@@ -12,6 +13,7 @@ public class DnDScene extends Scene{
     public Character play() {
         System.out.println("Stage 1 -- DnD");
         startScene();
+        TransitionToSchool.play();
         endScene();
         return player;
     }
