@@ -1,5 +1,15 @@
 # Stranger-Things-TFG
 
+## Teamwork & Contributions
+This project was developed collaboratively by two team members:
+- **Miguel Brugge**
+- **Xue Hu**
+
+Design decisions were discussed together, and the overall architecture was agreed upon before implementation.
+
+### Class Diagram
+![Class Diagram](images/CD.png)
+
 ## Creational Design Pattern
 
 ### 1. Singleton
