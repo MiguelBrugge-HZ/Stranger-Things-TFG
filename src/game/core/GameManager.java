@@ -16,7 +16,7 @@ public class GameManager {
     private GameManager() {}
 
     public void startGame() {
-        GameStage[] scenes = {
+        GameStage[] stages = {
                 new Stage1(),
                 new Stage2(),
                 new Stage3(),
@@ -24,22 +24,20 @@ public class GameManager {
         };
 
         Character player = chooseCharacter();
-        boolean playerDied = false;
 
-        for (GameStage scene : scenes) {
-            player = scene.start(player);
+        for (GameStage stage : stages) {
+            player = stage.start(player);
 
             if (!player.isAlive()) {
                 showGameOver(player);
-                playerDied = true;
-                break;
+                replayIfWanted();
+                return;
             }
-            scene.playTransition();
+
+            stage.playTransition();
         }
 
-        if (!playerDied) {
-            showVictory(player);
-        }
+        showVictory(player);
         replayIfWanted();
     }
 
