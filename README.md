@@ -238,5 +238,115 @@ public class Move {
         }
     }
 }
+```
 
+
+## Behavioral Design Pattern
+
+### 1. State
+In this game, the State pattern is applied through the scene system.  
+Each game scene represents a different state of the game, and encapsulates the behavior that is specific to that stage.
+
+Instead of using large conditional statements (such as `if` or `switch`) in the `GameManager` to control game flow, the behavior of the game changes naturally by switching between different `Scene` objects.
+
+This makes the game flow easier to extend and maintain, as new scenes (states) can be added without modifying existing control logic.
+
+- **State interface**: `Scene`
+- **Concrete States**: `DnDScene`, `SchoolScene`, `UpsideDownScene`, `VecnaFightScene`
+- **Context**: `GameStage`
+---
+
+### Implementation
+#### Scene
+
+The `Scene` class defines the common interface for all game states.  
+Each concrete scene must implement its own behavior.
+
+```java
+public abstract class Scene {
+    protected Character player;
+
+    public abstract Character play();
+    protected abstract void startScene();
+    protected abstract void endScene();
+
+    public void setPlayer(Character player) {
+        this.player = player;
+    }
+}
+```
+
+#### DnDScene(Concrete State Example): Each scene controls its own behavior and does not rely on external condition checks to decide what should happen next.
+
+```java
+public class DnDScene extends Scene {
+
+    @Override
+    public Character play() {
+        System.out.println("Stage 1 -- DnD");
+        startScene();
+        TransitionToSchool.play();
+        endScene();
+        return player;
+    }
+
+    @Override
+    public void startScene() {
+        System.out.println("DnDScene play");
+        player = chooseWeapon(player);
+    }
+
+    @Override
+    public void endScene() {
+        System.out.println("DnDScene end");
+    }
+}
+```
+
+#### GameStage: It decides which Scene (state) is active, but does not know the internal details of that scene.
+
+```java
+public abstract class GameStage {
+    abstract Scene createScene();
+
+    public Character start(Character player) {
+        Scene scene = this.createScene();
+        scene.setPlayer(player);
+        return scene.play();
+    }
+}
+
+```
+
+
+## Behavioral Design Pattern
+
+### 2. Template Method
+The Template Method pattern is used in the `GameStage` class to define the fixed structure of how a game stage is executed.
+
+The `start()` method defines the overall for running a stage:
+- creating a scene
+- assigning the player
+- executing the scene logic
+
+While the overall flow remains unchanged, subclasses are allowed to customize the behavior by implementing the `createScene()` method. This ensures consistent stage execution while allowing flexibility for different stage content.
+
+### Implementation
+#### GameStage: Only specific steps are delegated to subclasses.
+
+```java
+public abstract class GameStage {
+
+    abstract Scene createScene(); // Step to be customized by subclasses
+
+    public Character start(Character player) {
+        Scene scene = this.createScene();
+        scene.setPlayer(player);
+        return scene.play();
+    }
+
+    public void playTransition() {
+        // Optional
+    }
+}
 ```
