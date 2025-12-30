@@ -2,7 +2,7 @@
 
 ## Creational Design Pattern
 
-### 1. Singleton Pattern
+### 1. Singleton
 
 In this game, the Singleton pattern is used to make sure that there is only one `GameManager` controlling the game flow and one `InputManager` handling all console input.
 
@@ -57,7 +57,7 @@ public class InputManager {
 ```
 
 ## Creational Design Pattern
-### 2. Factory Method Pattern
+### 2. Factory Method
 
 In this game, the Factory Method pattern is used to create different types of game scenes, the main game flow doesn't need to know the exact scene classes.
 
@@ -96,7 +96,7 @@ public class Stage1 extends GameStage {
 
 ## Structural Design Pattern
 
-### 1. Decorator Pattern
+### 1. Decorator
 
 In this game, the Decorator pattern is used to add weapons to a character during gameplay without modifying the original character classes.
 
@@ -145,4 +145,98 @@ public class BatDecorator extends CharacterDecorator {
         return wrapped.getName() + " with Bat";
     }
 }
+```
+
+
+
+## Structural Design Pattern
+
+### 2. Facade
+In this game, the Facade pattern is used to simplify the combat system by providing a single entry point for handling fights between characters.
+
+Combat involves multiple responsibilities such as:
+- Checking whether characters are alive
+- Applying damage
+- Executing attack moves
+- Logging combat actions and results
+
+Instead of letting stages or scenes manage these details directly, all combat-related logic is encapsulated in the `CombatFacade` class. This keeps the game flow clean. 
+Scenes only need to call one method to start a fight, without knowing how damage, health, or logging are handled internally.
+
+---
+
+### Implementation
+#### CombatFacade: a single entry point for managing combat
+
+`CombatFacade` combine multiple subsystems and exposes `fight()` method to the rest of the game.
+
+```java
+public class CombatFacade {
+    private final HealthSystem healthSystem = new HealthSystem();
+    private final CombatLogger logger = new CombatLogger();
+
+    public void fight(Character player, Character enemy) {
+        System.out.println("Combat starts: " + player.getName() + " ⚔️ " + enemy.getName());
+
+        while (healthSystem.isAlive(player) && healthSystem.isAlive(enemy)) {
+            executeTurn(player, enemy, true);
+            if (!healthSystem.isAlive(enemy)) break;
+
+            executeTurn(enemy, player, false);
+        }
+
+        Character winner = healthSystem.isAlive(player) ? player : enemy;
+        logger.logWinner(winner);
+    }
+}
+```
+
+#### HealthSystem: handles health and damage logic
+```java
+public class HealthSystem {
+
+    public void applyDamage(Character target, int damage) {
+        int newHealth = target.getHealth() - damage;
+        target.setHealth(Math.max(newHealth, 0));
+    }
+
+    public boolean isAlive(Character character) {
+        return character.getHealth() > 0;
+    }
+}
+```
+
+#### CombatLogger: responsible for combat output
+```java
+public class CombatLogger {
+
+    public void logAttack(Character attacker, Character defender, int damage) {
+        System.out.println(attacker.getName() + " deals " + damage +
+                " 💥 damage ➡️ " + defender.getName());
+        System.out.println(defender.getName() + " ❤️: " + defender.getHealth());
+    }
+
+    public void logWinner(Character winner) {
+        System.out.println(winner.getName() + " wins the fight!🎖️");
+    }
+}
+```
+
+#### Move: encapsulates attack behavior
+```java
+public class Move {
+    private final String name;
+    private final int minDamage;
+    private final int maxDamage;
+    private final double hitChance;
+
+    public int execute() {
+        if (RANDOM.nextDouble() <= hitChance) {
+            return RANDOM.nextInt(maxDamage - minDamage + 1) + minDamage;
+        } else {
+            return 0;
+        }
+    }
+}
+
 ```
