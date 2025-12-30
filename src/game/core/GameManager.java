@@ -1,10 +1,10 @@
 package game.core;
 
-import game.characters.enemies.Demogorgon;
 import game.characters.heros.Eleven;
-import game.stages.GameStage;
-import game.stages.Stage1;
-import game.stages.Stage2;
+import game.characters.heros.Steve;
+import game.scenes.Result.GameOverScene;
+import game.scenes.Result.VictoryScene;
+import game.stages.*;
 import game.utils.InputManager;
 import game.characters.Character;
 
@@ -16,22 +16,47 @@ public class GameManager {
     private GameManager() {}
 
     public void startGame() {
-        GameStage[] scenes = { new Stage1(), new Stage2() };
+        GameStage[] stages = {
+                new Stage1(),
+                new Stage2(),
+                new Stage3(),
+                new Stage4()
+        };
+
         Character player = chooseCharacter();
-        for (GameStage scene : scenes) {
-            player = scene.start(player);
+
+        for (GameStage stage : stages) {
+            player = stage.start(player);
+
+            if (!player.isAlive()) {
+                showGameOver(player);
+                replayIfWanted();
+                return;
+            }
+
+            stage.playTransition();
         }
+
+        showVictory(player);
         replayIfWanted();
     }
 
     private Character chooseCharacter() {
         List<Character> characters = List.of(
                 new Eleven(),
-                new Demogorgon()
+                new Steve()
         );
 
         InputManager input = InputManager.getInstance();
         return input.chooseOption("Choose your character:", characters);
+    }
+
+    private void showVictory(Character player) {
+        VictoryScene.play(player);
+    }
+
+    private void showGameOver(Character player) {
+        GameOverScene.play(player);
     }
 
     private void replayIfWanted() {

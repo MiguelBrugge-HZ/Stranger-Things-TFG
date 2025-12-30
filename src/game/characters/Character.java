@@ -29,6 +29,11 @@ public abstract class Character {
         return moves.get(random.nextInt(moves.size()));
     }
 
+    public boolean isAlive() {
+        return health > 0;
+    }
+
+
     public void attack() {
         System.out.println(this.getName() + " attacks*");
     }
