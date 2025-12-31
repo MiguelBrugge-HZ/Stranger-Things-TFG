@@ -12,9 +12,4 @@ public class Demogorgon extends Enemy {
                 new Move("😱Screech", 5, 25, 0.5)
         ));
     }
-
-    @Override
-    public void attack() {
-        System.out.println(this.getName() + " attacks*");
-    }
 }

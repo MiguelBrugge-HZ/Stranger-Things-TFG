@@ -1,4 +1,4 @@
-package game.scenes.Result;
+package game.scenes.result;
 import game.characters.Character;
 
 public class VictoryScene {

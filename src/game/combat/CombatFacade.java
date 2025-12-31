@@ -10,18 +10,17 @@ public class CombatFacade {
         System.out.println("Combat starts: " + player.getName() + " ⚔️ " + enemy.getName());
 
         while (healthSystem.isAlive(player) && healthSystem.isAlive(enemy)) {
-            executeTurn(player, enemy, true);
+            executeTurn(player, enemy);
             if (!healthSystem.isAlive(enemy)) break;
 
-            executeTurn(enemy, player, false);
+            executeTurn(enemy, player);
         }
 
         Character winner = healthSystem.isAlive(player) ? player : enemy;
         logger.logWinner(winner);
     }
 
-    private void executeTurn(Character attacker, Character defender, boolean playerTurn) {
-//        Move move = playerTurn ? attacker.chooseMove() : attacker.chooseRandomMove();
+    private void executeTurn(Character attacker, Character defender) {
         Move move = attacker.chooseMove();
         System.out.println(attacker.getName() + " uses " + move.getName());
 

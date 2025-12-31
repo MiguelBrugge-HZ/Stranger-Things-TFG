@@ -13,9 +13,4 @@ public class Vecna extends Enemy {
                 new Move("💀 Reality Break", 20, 45, 0.35)
         ));
     }
-
-    @Override
-    public void attack() {
-        System.out.println(this.getName() + " attacks*");
-    }
 }

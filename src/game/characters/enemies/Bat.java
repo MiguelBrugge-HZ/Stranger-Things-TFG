@@ -13,9 +13,4 @@ public class Bat extends Enemy {
                 new Move("🔊 Sonic Screech", 3, 14, 0.7)
         ));
     }
-
-    @Override
-    public void attack() {
-        System.out.println(this.getName() + " attacks*");
-    }
 }

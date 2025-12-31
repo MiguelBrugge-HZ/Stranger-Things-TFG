@@ -33,9 +33,8 @@ public abstract class Character {
         return health > 0;
     }
 
-
-    public void attack() {
-        System.out.println(this.getName() + " attacks*");
+    public void heal() {
+        this.setHealth(this.getHealth() + 10);
     }
 
     public String getName() {

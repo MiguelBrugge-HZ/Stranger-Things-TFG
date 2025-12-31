@@ -12,7 +12,4 @@ public abstract class GameStage {
         System.out.println();
         return scene.play();
     }
-
-    public void playTransition() {
-    }
 }

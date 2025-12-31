@@ -3,7 +3,9 @@ package game.scenes;
 import game.characters.Character;
 import game.characters.enemies.Bat;
 import game.combat.CombatFacade;
-import game.scenes.transitions.TransitionToVecnaFight;
+import game.scenes.dialog.intro.UpsideDownIntroDialog;
+import game.scenes.dialog.transition.UpsideDownTransitionDialog;
+import game.scenes.dialog.transition.VecnaFightTransitionDialog;
 
 public class UpsideDownScene extends BattleScene{
     public UpsideDownScene(CombatFacade combatFacade) {
@@ -11,27 +13,17 @@ public class UpsideDownScene extends BattleScene{
     }
 
     @Override
-    public game.characters.Character play() {
-        System.out.println("Stage 3 -- Upside Down");
-        startScene();
-        fightBatScene();
-        endScene();
-        return player;
-    }
-
-    @Override
     public void startScene() {
-        System.out.println("UpsideDownScene play");
+        new UpsideDownIntroDialog().play();
     }
 
-    public void fightBatScene() {
+    public void fightScene() {
         Character bat = new Bat();
         combatFacade.fight(player, bat);
     }
 
     @Override
     public void endScene() {
-        System.out.println("UpsideDownScene end");
+        new VecnaFightTransitionDialog().play();
     }
-
 }

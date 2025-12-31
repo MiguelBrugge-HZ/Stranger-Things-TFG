@@ -2,8 +2,8 @@ package game.core;
 
 import game.characters.heros.Eleven;
 import game.characters.heros.Steve;
-import game.scenes.Result.GameOverScene;
-import game.scenes.Result.VictoryScene;
+import game.scenes.result.GameOverScene;
+import game.scenes.result.VictoryScene;
 import game.stages.*;
 import game.utils.InputManager;
 import game.characters.Character;
@@ -34,7 +34,7 @@ public class GameManager {
                 return;
             }
 
-            stage.playTransition();
+            player.heal();
         }
 
         showVictory(player);
