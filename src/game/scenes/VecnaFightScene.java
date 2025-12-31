@@ -12,7 +12,6 @@ public class VecnaFightScene extends BattleScene {
     @Override
     public game.characters.Character play() {
         System.out.println("Stage 4 -- Final Fight");
-        System.out.println(player.getClass().getSimpleName());
         startScene();
         fightVecnaScene();
         endScene();

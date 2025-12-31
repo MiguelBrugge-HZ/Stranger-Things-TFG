@@ -12,7 +12,6 @@ public class SchoolScene extends BattleScene {
     @Override
     public Character play() {
         System.out.println("Stage 2 -- School");
-        System.out.println(player.getClass().getSimpleName());
         startScene();
         fightDemogorgonScene();
         endScene();

@@ -13,7 +13,6 @@ public class UpsideDownScene extends BattleScene{
     @Override
     public game.characters.Character play() {
         System.out.println("Stage 3 -- Upside Down");
-        System.out.println(player.getClass().getSimpleName());
         startScene();
         fightBatScene();
         endScene();
