@@ -1,5 +1,7 @@
 # Stranger-Things-TFG
 
+🚨Link to the GitHub repository: https://github.com/MiguelBrugge-HZ/Stranger-Things-TFG
+
 ## Teamwork & Contributions
 This project was developed collaboratively by two team members:
 - **Miguel Brugge**
