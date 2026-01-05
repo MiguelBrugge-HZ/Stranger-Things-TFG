@@ -8,7 +8,7 @@ public class BatDecorator extends CharacterDecorator {
 
     public BatDecorator(Character wrapped) {
         super(wrapped);
-        moves.add(new Move("🏏 Bat Slash", 8, 18, 0.85));
+        moves.add(new Move("🏏 Bat Slash", 14, 30, 0.85));
     }
 
     @Override

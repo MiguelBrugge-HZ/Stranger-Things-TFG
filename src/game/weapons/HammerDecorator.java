@@ -8,7 +8,7 @@ public class HammerDecorator extends CharacterDecorator {
 
     public HammerDecorator(Character wrapped) {
         super(wrapped);
-        moves.add(new Move("🔨 Crushing Blow", 12, 25, 0.6));
+        moves.add(new Move("🔨 Crushing Blow", 22, 40, 0.6));
     }
 
     @Override
