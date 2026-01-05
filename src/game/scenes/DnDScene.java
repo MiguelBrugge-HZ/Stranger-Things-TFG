@@ -16,13 +16,16 @@ public class DnDScene extends Scene{
     }
 
     private Character chooseWeapon(Character player) {
-        List<Character> weaponChoices = List.of(
-                new BatDecorator(player),
-                new HammerDecorator(player)
-        );
+        List<String> weapons = List.of("Bat", "Hammer");
 
         InputManager input = InputManager.getInstance();
-        return input.chooseOption("Choose your weapon:", weaponChoices);
+        String choice = input.chooseOption("Choose your weapon:", weapons);
+
+        return switch (choice) {
+            case "Bat" -> new BatDecorator(player);
+            case "Hammer" -> new HammerDecorator(player);
+            default -> player;
+        };
     }
 
     @Override
