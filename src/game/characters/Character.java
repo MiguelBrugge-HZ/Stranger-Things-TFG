@@ -34,7 +34,7 @@ public abstract class Character {
     }
 
     public void heal() {
-        this.setHealth(this.getHealth() + 10);
+        this.setHealth(this.getHealth() + 40);
     }
 
     public String getName() {
