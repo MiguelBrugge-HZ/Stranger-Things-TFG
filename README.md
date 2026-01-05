@@ -130,17 +130,23 @@ public abstract class CharacterDecorator extends Character {
     protected final Character wrapped;
 
     protected CharacterDecorator(Character wrapped) {
-        super(
-            wrapped.getName(),
-            wrapped.getHealth(),
-            new ArrayList<>(wrapped.getMoves())
-        );
+        super(wrapped.getName(), 0, wrapped.getMoves());
         this.wrapped = wrapped;
     }
 
     @Override
-    public Move chooseMove() {
-        return super.chooseMove();
+    public int getHealth() {
+        return wrapped.getHealth();
+    }
+
+    @Override
+    public void setHealth(int health) {
+        wrapped.setHealth(health);
+    }
+
+    @Override
+    public boolean isAlive() {
+        return wrapped.isAlive();
     }
 }
 ```
@@ -167,7 +173,23 @@ public class BatDecorator extends CharacterDecorator {
 }
 ```
 
+#### Using the Decorator Pattern in Gameplay: During gameplay, the player can choose a weapon for their character. The chosen weapon is applied by wrapping the existing character with a corresponding decorator:
 
+```java
+private Character chooseWeapon(Character player) {
+    List<String> weapons = List.of("Bat", "Hammer");
+
+    InputManager input = InputManager.getInstance();
+    String choice = input.chooseOption("Choose your weapon:", weapons);
+
+    return switch (choice) {
+        case "Bat" -> new BatDecorator(player);
+        case "Hammer" -> new HammerDecorator(player);
+        default -> player;
+    };
+}
+
+```
 
 ## Structural Design Pattern
 
@@ -371,30 +393,45 @@ public abstract class GameStage {
 
 ```
 
-
 ## Behavioral Design Pattern
 
 ### 2. Template Method
-The Template Method pattern is used in the `GameStage` class to define the fixed structure of how a game stage is executed.
+The **Template Method** pattern is a **behavioral design pattern** that defines a **skeleton of an algorithm** in a base class while letting subclasses **override specific steps**.  
 
-The `start()` method defines the overall for running a stage:
-- creating a scene
-- assigning the player
-- executing the scene logic
+In our game, the **Template Method is implemented in `Scene.play()`**, which controls the internal flow of a scene.  
 
-While the overall flow remains unchanged, subclasses are allowed to customize the behavior by implementing the `createScene()` method. This ensures consistent stage execution while allowing flexibility for different stage content.
+`GameStage` does not implement a Template Method itself but **orchestrates stage execution** by creating a `Scene` and calling its `play()` method. This separation ensures that the **overall stage flow remains consistent**, while each scene can provide **unique behavior**.
+
+The `play()` method defines the **fixed sequence of steps**:
+
+1. **Start the scene** (`startScene()`) — customizable by subclasses  
+2. **End the scene** (`endScene()`) — customizable by subclasses  
+3. **Return the player** — fixed step
+
+Key points:
+
+- **Fixed steps:** The sequence of method calls (`startScene()` → `endScene()` → return `player`) **cannot be changed by subclasses**, ensuring consistency.  
+- **Customizable steps:** Subclasses implement `startScene()` and `endScene()` to provide **scene-specific behavior**.  
+- **Decoupling:** `Scene` controls the internal flow, while `GameStage` decides **which scene to run**, keeping concerns separate.  
+- **Extensibility:** Adding a new scene requires only implementing `startScene()` and `endScene()`, without changing existing code.
+
+This design allows all scenes to **follow the same overall flow** while providing the **flexibility to customize behavior** for each scene.
+
+---
 
 ### Implementation
-#### GameStage: Only specific steps are delegated to subclasses.
+
+#### Scene: Template Method Implementation
 
 ```java
-public abstract class GameStage {
-    abstract Scene createScene();
-    public Character start(Character player) {
-        Scene scene = this.createScene();
-        scene.setPlayer(player);
-        System.out.println();
-        return scene.play();
+public abstract class Scene {
+    protected Character player;
+    protected abstract void startScene();
+    protected abstract void endScene();
+
+    public Character play() {
+        startScene();
+        endScene();
+        return player;
     }
 }
-```
