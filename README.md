@@ -5,8 +5,15 @@ This project was developed collaboratively by two team members:
 - **Miguel Brugge**
 - **Xue Hu**
 
-Design decisions were discussed together, and the overall architecture was agreed upon before implementation.
+At the start of the project, we focused on coming up with a suitable idea for the game. We brainstormed several concepts, and after a few days we discussed the Netflix series Stranger Things. Because this series is a shared interest, we decided to base our game on its theme and atmosphere. Together, we discussed how the game mechanics would work and created a storyboard to visualize the gameplay and flow of the game.
 
+![Story Board](images/story-board.png)
+
+Next, we both worked on designing the class diagram. Each of us initially created our own simple diagrams based on our ideas. Miguel then combined these ideas into a complete class diagram and further refined it based on feedback from Xue. This ensured that the overall design was well-structured before implementation.
+
+After finalizing the class diagram, we both implemented it into the codebase. During development, we noticed that the original class diagram was not perfect and needed some adjustments. While some design decisions were changed along the way, most of the structural elements of the class diagram remained valid and were successfully used in the final implementation.
+
+Towards the end of the project, we worked together on balancing the gameplay. We adjusted values such as player health and enemy damage, as the game initially felt too difficult and the player character died too quickly.
 ### Class Diagram
 ![Class Diagram](images/CD.png)
 
@@ -84,10 +91,10 @@ The `GameStage` class defines a method for creating a `Scene`, but does not deci
 ```java
 public abstract class GameStage {
     abstract Scene createScene();
-
     public Character start(Character player) {
         Scene scene = this.createScene();
         scene.setPlayer(player);
+        System.out.println();
         return scene.play();
     }
 }
@@ -98,9 +105,7 @@ public abstract class GameStage {
 ```java
 public class Stage1 extends GameStage {
     @Override
-    Scene createScene() {
-        return new DnDScene();
-    }
+    Scene createScene() { return new DnDScene(); }
 }
 ```
 
@@ -147,7 +152,12 @@ public class BatDecorator extends CharacterDecorator {
 
     public BatDecorator(Character wrapped) {
         super(wrapped);
-        moves.add(new Move("🏏 Bat Slash", 8, 18, 0.85));
+        moves.add(new Move("🏏 Bat Slash", 14, 30, 0.85));
+    }
+
+    @Override
+    public String toString() {
+        return "Bat";
     }
 
     @Override
@@ -188,15 +198,30 @@ public class CombatFacade {
     public void fight(Character player, Character enemy) {
         System.out.println("Combat starts: " + player.getName() + " ⚔️ " + enemy.getName());
 
-        while (healthSystem.isAlive(player) && healthSystem.isAlive(enemy)) {
-            executeTurn(player, enemy, true);
-            if (!healthSystem.isAlive(enemy)) break;
+        while (player.isAlive() && enemy.isAlive()) {
+            executeTurn(player, enemy);
+            if (!enemy.isAlive()) break;
 
-            executeTurn(enemy, player, false);
+            executeTurn(enemy, player);
         }
 
-        Character winner = healthSystem.isAlive(player) ? player : enemy;
+        Character winner = player.isAlive() ? player : enemy;
         logger.logWinner(winner);
+    }
+
+    private void executeTurn(Character attacker, Character defender) {
+        Move move = attacker.chooseMove();
+        System.out.println(attacker.getName() + " uses " + move.getName());
+
+        int damage = move.execute();
+        if (damage > 0) {
+            healthSystem.applyDamage(defender, damage);
+        } else {
+            System.out.println(attacker.getName() + "'s attack missed!💨");
+        }
+
+        logger.logAttack(attacker, defender, damage);
+        System.out.println();
     }
 }
 ```
@@ -208,10 +233,6 @@ public class HealthSystem {
     public void applyDamage(Character target, int damage) {
         int newHealth = target.getHealth() - damage;
         target.setHealth(Math.max(newHealth, 0));
-    }
-
-    public boolean isAlive(Character character) {
-        return character.getHealth() > 0;
     }
 }
 ```
@@ -238,7 +259,20 @@ public class Move {
     private final String name;
     private final int minDamage;
     private final int maxDamage;
-    private final double hitChance;
+    private final double hitChance; // 0.0 to 1.0
+
+    private static final Random RANDOM = new Random();
+
+    public Move(String name, int minDamage, int maxDamage, double hitChance) {
+        this.name = name;
+        this.minDamage = minDamage;
+        this.maxDamage = maxDamage;
+        this.hitChance = hitChance;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public int execute() {
         if (RANDOM.nextDouble() <= hitChance) {
@@ -246,6 +280,11 @@ public class Move {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public String toString() {
+        return name + " (Damage: " + minDamage + "-" + maxDamage + ", Hit chance: " + (int)(hitChance*100) + "%)";
     }
 }
 ```
@@ -275,13 +314,17 @@ Each concrete scene must implement its own behavior.
 ```java
 public abstract class Scene {
     protected Character player;
-
-    public abstract Character play();
     protected abstract void startScene();
     protected abstract void endScene();
 
     public void setPlayer(Character player) {
         this.player = player;
+    }
+
+    public Character play() {
+        startScene();
+        endScene();
+        return player;
     }
 }
 ```
@@ -289,26 +332,26 @@ public abstract class Scene {
 #### DnDScene(Concrete State Example): Each scene controls its own behavior and does not rely on external condition checks to decide what should happen next.
 
 ```java
-public class DnDScene extends Scene {
-
-    @Override
-    public Character play() {
-        System.out.println("Stage 1 -- DnD");
-        startScene();
-        TransitionToSchool.play();
-        endScene();
-        return player;
-    }
-
+public class DnDScene extends Scene{
     @Override
     public void startScene() {
-        System.out.println("DnDScene play");
-        player = chooseWeapon(player);
+        new DnDIntroDialog().play();
+    }
+
+    private Character chooseWeapon(Character player) {
+        List<Character> weaponChoices = List.of(
+                new BatDecorator(player),
+                new HammerDecorator(player)
+        );
+
+        InputManager input = InputManager.getInstance();
+        return input.chooseOption("Choose your weapon:", weaponChoices);
     }
 
     @Override
     public void endScene() {
-        System.out.println("DnDScene end");
+        new SchoolTransitionDialog().play();
+        player = chooseWeapon(player);
     }
 }
 ```
@@ -318,10 +361,10 @@ public class DnDScene extends Scene {
 ```java
 public abstract class GameStage {
     abstract Scene createScene();
-
     public Character start(Character player) {
         Scene scene = this.createScene();
         scene.setPlayer(player);
+        System.out.println();
         return scene.play();
     }
 }
@@ -346,17 +389,12 @@ While the overall flow remains unchanged, subclasses are allowed to customize th
 
 ```java
 public abstract class GameStage {
-
-    abstract Scene createScene(); // Step to be customized by subclasses
-
+    abstract Scene createScene();
     public Character start(Character player) {
         Scene scene = this.createScene();
         scene.setPlayer(player);
+        System.out.println();
         return scene.play();
-    }
-
-    public void playTransition() {
-        // Optional
     }
 }
 ```
