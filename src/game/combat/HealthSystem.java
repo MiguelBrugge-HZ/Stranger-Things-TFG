@@ -8,8 +8,4 @@ public class HealthSystem {
         int newHealth = target.getHealth() - damage;
         target.setHealth(Math.max(newHealth, 0));
     }
-
-    public boolean isAlive(Character character) {
-        return character.getHealth() > 0;
-    }
 }

@@ -9,14 +9,14 @@ public class CombatFacade {
     public void fight(Character player, Character enemy) {
         System.out.println("Combat starts: " + player.getName() + " ⚔️ " + enemy.getName());
 
-        while (healthSystem.isAlive(player) && healthSystem.isAlive(enemy)) {
+        while (player.isAlive() && enemy.isAlive()) {
             executeTurn(player, enemy);
-            if (!healthSystem.isAlive(enemy)) break;
+            if (!enemy.isAlive()) break;
 
             executeTurn(enemy, player);
         }
 
-        Character winner = healthSystem.isAlive(player) ? player : enemy;
+        Character winner = player.isAlive() ? player : enemy;
         logger.logWinner(winner);
     }
 
