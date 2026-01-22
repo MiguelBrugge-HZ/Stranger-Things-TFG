@@ -326,73 +326,90 @@ This makes the game flow easier to extend and maintain, as new scenes (states) c
 
 - **State interface**: `Scene`
 - **Concrete States**: `DnDScene`, `SchoolScene`, `UpsideDownScene`, `VecnaFightScene`
-- **Context**: `GameStage`
+- **Context**: `GameManager`
 ---
 
 ### Implementation
 #### Scene
 
 The `Scene` class defines the common interface for all game states.  
-Each concrete scene must implement its own behavior.
+Each concrete scene implements its own behavior and decides what the next state is, including handling victory or defeat.
 
 ```java
 public abstract class Scene {
     protected Character player;
-    protected abstract void startScene();
-    protected abstract void endScene();
 
     public void setPlayer(Character player) {
         this.player = player;
     }
 
-    public Character play() {
+    public final Scene play() {
         startScene();
-        endScene();
-        return player;
+        fightScene();
+        return endScene();
     }
+
+    protected void fightScene() {
+    }
+
+    protected abstract void startScene();
+    protected abstract Scene endScene();
 }
+
 ```
 
-#### DnDScene(Concrete State Example): Each scene controls its own behavior and does not rely on external condition checks to decide what should happen next.
+#### DnDScene(Concrete State Example): Each scene controls its own behavior and does not rely on external checks to decide what happens next.
 
 ```java
-public class DnDScene extends Scene{
+public class DnDScene extends Scene {
+
+    private final CombatFacade combatFacade;
+
+    public DnDScene(CombatFacade combatFacade) {
+        this.combatFacade = combatFacade;
+    }
+
     @Override
     public void startScene() {
         new DnDIntroDialog().play();
     }
 
     private Character chooseWeapon(Character player) {
-        List<Character> weaponChoices = List.of(
-                new BatDecorator(player),
-                new HammerDecorator(player)
-        );
+        List<String> weapons = List.of("Bat", "Hammer");
 
         InputManager input = InputManager.getInstance();
-        return input.chooseOption("Choose your weapon:", weaponChoices);
+        String choice = input.chooseOption("Choose your weapon:", weapons);
+
+        return switch (choice) {
+            case "Bat" -> new BatDecorator(player);
+            case "Hammer" -> new HammerDecorator(player);
+            default -> player;
+        };
     }
 
     @Override
-    public void endScene() {
-        new SchoolTransitionDialog().play();
+    protected Scene endScene() {
         player = chooseWeapon(player);
+
+        new SchoolTransitionDialog().play();
+
+        Scene next = new SchoolScene(combatFacade);
+        next.setPlayer(player);
+        return next;
     }
 }
 ```
 
-#### GameStage: It decides which Scene (state) is active, but does not know the internal details of that scene.
+#### GameManager: initializes the first scene
 
 ```java
-public abstract class GameStage {
-    abstract Scene createScene();
-    public Character start(Character player) {
-        Scene scene = this.createScene();
-        scene.setPlayer(player);
-        System.out.println();
-        return scene.play();
-    }
-}
+{
+Scene currentScene = new DnDScene(combatFacade);
+        currentScene.setPlayer(player);
 
+        while (currentScene != null) {
+currentScene = currentScene.play();
+        }
 ```
 
 ## Behavioral Design Pattern
@@ -407,19 +424,19 @@ In our game, the **Template Method is implemented in `Scene.play()`**, which con
 The `play()` method defines the **fixed sequence of steps**:
 
 1. **Start the scene** (`startScene()`) — customizable by subclasses  
-2. **End the scene** (`endScene()`) — customizable by subclasses  
-3. **Return the player** — fixed step
+2. **Fight actions** (`fightScene()`) — customizable by subclasses  
+3. **Determine and return the next state** (`endScene()`) — fixed step
 
 Key points:
 
-- **Fixed steps:** The sequence of method calls (`startScene()` → `endScene()` → return `player`) **cannot be changed by subclasses**, ensuring consistency.  
-- **Customizable steps:** Subclasses implement `startScene()` and `endScene()` to provide **scene-specific behavior**.  
-- **Decoupling:** `Scene` controls the internal flow, while `GameStage` decides **which scene to run**, keeping concerns separate.  
-- **Extensibility:** Adding a new scene requires only implementing `startScene()` and `endScene()`, without changing existing code.
+- **Fixed steps:** The sequence of method calls (`startScene()` → `fightScene()` →  `endScene`) **cannot be changed by subclasses**, ensuring consistency.  
+- **Customizable steps:** Subclasses implement `startScene()`,`fightScene()` and `endScene()` to provide **scene-specific behavior**.  
+- **Decoupling:** `Scene` controls the internal flow, while `GameManager` simply executes scenes in a loop, **without knowing the next scene**, keeping concerns separate.  
+- **Extensibility:** Adding a new scene requires only implementing the abstract steps, without changing existing code. 
 
-This design allows all scenes to **follow the same overall flow** while providing the **flexibility to customize behavior** for each scene.
+This design allows all scenes to **follow the same overall flow** while providing the **flexibility to customize behavior** for each scene. It also integrates the State Pattern, because each scene itself decides what the next scene/state will be, including terminal states like victory or defeat.
 
----
+--- 
 
 ### Implementation
 
@@ -428,12 +445,20 @@ This design allows all scenes to **follow the same overall flow** while providin
 ```java
 public abstract class Scene {
     protected Character player;
-    protected abstract void startScene();
-    protected abstract void endScene();
 
-    public Character play() {
+    protected abstract void startScene();
+    protected abstract Scene endScene();
+
+    public void setPlayer(Character player) {
+        this.player = player;
+    }
+
+    public final Scene play() {
         startScene();
-        endScene();
-        return player;
+        fightScene();
+        return endScene();
+    }
+
+    protected void fightScene() {
     }
 }

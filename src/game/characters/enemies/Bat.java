@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Bat extends Enemy {
     public Bat() {
-        super("Bat", 90, List.of(
+        super("Bat", 80, List.of(
                 new Move("🦇 Bite", 6, 10, 0.9),
                 new Move("🌪️ Wing Flap", 4, 8, 0.95),
                 new Move("🔊 Sonic Screech", 3, 14, 0.7)
