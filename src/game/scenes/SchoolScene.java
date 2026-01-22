@@ -16,13 +16,22 @@ public class SchoolScene extends BattleScene {
         new SchoolIntroDialog().play();
     }
 
-    public void fightScene() {
+    @Override
+    protected void fightScene() {
         Character demogorgon = new Demogorgon();
         combatFacade.fight(player, demogorgon);
     }
 
     @Override
-    public void endScene() {
-        new UpsideDownTransitionDialog().play();
+    protected Scene endScene() {
+        if (!player.isAlive()) {
+            Scene end = new EndScene(false);
+            end.setPlayer(player);
+            return end;
+        }
+
+        Scene next = new UpsideDownScene(combatFacade);
+        next.setPlayer(player);
+        return next;
     }
 }

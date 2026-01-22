@@ -6,10 +6,18 @@ import game.scenes.dialog.transition.SchoolTransitionDialog;
 import game.utils.InputManager;
 import game.weapons.BatDecorator;
 import game.weapons.HammerDecorator;
+import game.combat.CombatFacade;
 
 import java.util.List;
 
-public class DnDScene extends Scene{
+public class DnDScene extends Scene {
+
+    private final CombatFacade combatFacade;
+
+    public DnDScene(CombatFacade combatFacade) {
+        this.combatFacade = combatFacade;
+    }
+
     @Override
     public void startScene() {
         new DnDIntroDialog().play();
@@ -29,8 +37,13 @@ public class DnDScene extends Scene{
     }
 
     @Override
-    public void endScene() {
-        new SchoolTransitionDialog().play();
+    protected Scene endScene() {
         player = chooseWeapon(player);
+
+        new SchoolTransitionDialog().play();
+
+        Scene next = new SchoolScene(combatFacade);
+        next.setPlayer(player);
+        return next;
     }
 }

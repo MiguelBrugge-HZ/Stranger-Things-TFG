@@ -2,9 +2,9 @@ package game.core;
 
 import game.characters.heros.Eleven;
 import game.characters.heros.Steve;
-import game.scenes.result.GameOverScene;
-import game.scenes.result.VictoryScene;
-import game.stages.*;
+import game.combat.CombatFacade;
+import game.scenes.DnDScene;
+import game.scenes.Scene;
 import game.utils.InputManager;
 import game.characters.Character;
 
@@ -16,30 +16,20 @@ public class GameManager {
     private GameManager() {}
 
     public void startGame() {
-        GameStage[] stages = {
-                new Stage1(),
-                new Stage2(),
-                new Stage3(),
-                new Stage4()
-        };
-
         Character player = chooseCharacter();
 
-        for (GameStage stage : stages) {
-            player = stage.start(player);
+        CombatFacade combatFacade = new CombatFacade();
 
-            if (!player.isAlive()) {
-                showGameOver(player);
-                replayIfWanted();
-                return;
-            }
+        Scene currentScene = new DnDScene(combatFacade);
+        currentScene.setPlayer(player);
 
-            player.heal();
+        while (currentScene != null) {
+            currentScene = currentScene.play();
         }
 
-        showVictory(player);
         replayIfWanted();
     }
+
 
     private Character chooseCharacter() {
         List<Character> characters = List.of(
@@ -49,14 +39,6 @@ public class GameManager {
 
         InputManager input = InputManager.getInstance();
         return input.chooseOption("Choose your character:", characters);
-    }
-
-    private void showVictory(Character player) {
-        VictoryScene.play(player);
-    }
-
-    private void showGameOver(Character player) {
-        GameOverScene.play(player);
     }
 
     private void replayIfWanted() {

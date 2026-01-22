@@ -3,16 +3,20 @@ import game.characters.Character;
 
 public abstract class Scene {
     protected Character player;
+
     protected abstract void startScene();
-    protected abstract void endScene();
+    protected abstract Scene endScene();
 
     public void setPlayer(Character player) {
         this.player = player;
     }
 
-    public Character play() {
+    public final Scene play() {
         startScene();
-        endScene();
-        return player;
+        fightScene();
+        return endScene();
+    }
+
+    protected void fightScene() {
     }
 }
